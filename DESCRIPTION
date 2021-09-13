@@ -1,0 +1,29 @@
+Package: BV
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Authors@R: 
+  c(person(given = "Bangyao",
+         family = "Zhao",
+         role = c("aut", "cre"),
+         email = "byzhao@umich.edu"),
+  person(given = "Yuan",
+         family = "Zhong",
+         role = c("aut"),
+         email = "ylzhong@umich.edu"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    Matrix,
+    mvtnorm,
+    pgdraw,
+    truncnorm,
+    progress,
+    BayesLogit,
+    igraph,
+    dplyr
+RoxygenNote: 7.1.1
