@@ -25,5 +25,6 @@ Imports:
     progress,
     BayesLogit,
     igraph,
-    dplyr
+    dplyr,
+    utils
 RoxygenNote: 7.1.1

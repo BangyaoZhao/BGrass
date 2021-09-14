@@ -7,7 +7,7 @@
 #'
 #' @return The updated BV_chain
 #'
-#' @importFrom progress progress_bar
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @exportS3Method update BV_chain
 
 update.BV_chain = function(object,
@@ -32,9 +32,7 @@ update.BV_chain = function(object,
   end_pos = end_pos + n_ite
   start_pos = end_pos - chain_length + 1
   # Update
-  pb <-
-    progress_bar$new(format = "  updating [:bar] :percent eta: :eta",
-                     total = n_ite)
+  pb <- txtProgressBar(min = 0, max = n_ite, style = 3)
   for (j in 1:n_ite) {
     coeflst = update_one_time(coeflst, object)
     pos = end_pos - start_pos  + 1 + j - n_ite
@@ -42,8 +40,9 @@ update.BV_chain = function(object,
       chain = fill_in(coeflst, chain, pos)
     }
     # update progression bar
-    pb$tick()
+    setTxtProgressBar(pb, j)
   }
+  close(pb)
   # store the updated chain
 
   object$chain = chain
