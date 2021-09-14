@@ -11,11 +11,9 @@
 sub_BV_chain = function(BV_chain,
                         new_start_pos,
                         new_end_pos) {
-  list2env(BV_chain, envir = environment())
   BV_chain$chain =
-    resize_chain(BV_chain$chain,
-                 new_start_pos - start_pos,
-                 new_end_pos - end_pos)
+    BV_chain$chain[new_start_pos - start_pos + 1,
+                   new_end_pos - start_pos + 1]
   BV_chain$start_pos = new_start_pos
   BV_chain$end_pos = new_end_pos
   return(BV_chain)
