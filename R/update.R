@@ -18,22 +18,24 @@ update.BV_chain = function(object,
   list2env(object, envir = environment())
 
   # extract the latest parameters
-  coeflst = coef(object, chain_range = end_pos)
-  coeflst$Omega = chain$Omega
+  chain_length = end_pos - start_pos + 1
+  coeflst = chain[[chain_length]]
 
   # resize the chain to appropriate length
-  chain_length = end_pos - start_pos + 1
   n_drop = chain_length + n_ite - max_length
   n_drop = max(0, n_drop)
   n_drop = min(chain_length, n_drop)
-  n_add = min(n_ite, max_length)
-  chain = resize_chain(chain, n_drop, n_add)
+  if (n_drop < chain_length) {
+    chain = chain[(n_drop + 1):chain_length]
+  } else {
+    chain = list()
+  }
 
-  chain_length = chain_length + n_add - n_drop
   end_pos = end_pos + n_ite
-  start_pos = end_pos - chain_length + 1
+  start_pos = max(end_pos - max_length + 1, start_pos)
   # Update
   isRStudio <- Sys.getenv("RSTUDIO") == "1"
+  # select appropriate progression bar
   if (!isRStudio) {
     pb <- txtProgressBar(min = 0,
                          max = n_ite,
@@ -47,7 +49,7 @@ update.BV_chain = function(object,
     coeflst = update_one_time(coeflst, object)
     pos = end_pos - start_pos  + 1 + j - n_ite
     if (pos >= 1) {
-      chain = fill_in(coeflst, chain, pos)
+      chain[[pos]] = coeflst
     }
     # update progression bar
 
@@ -66,58 +68,6 @@ update.BV_chain = function(object,
   object$end_pos = end_pos
   object$start_pos = start_pos
   return(object)
-}
-##################################
-resize_chain = function(chain, n_drop, n_add) {
-  chain_names = names(chain)[grepl('_chain', names(chain))]
-  chain_length = ncol(chain[['beta_chain']])
-  if (n_drop - n_add >= chain_length) {
-    chain_range = numeric(0)
-    n_add = 0
-  } else if (n_drop < chain_length) {
-    chain_range = (n_drop + 1):(chain_length + min(n_add, 0))
-    n_add = max(n_add, 0)
-  } else {
-    chain_range = numeric(0)
-    n_add = n_add - n_drop + chain_length
-  }
-  for (chain_name in chain_names) {
-    chain_dim = dim(chain[[chain_name]])
-    if (is.null(chain_dim)) {
-      chain[[chain_name]] = chain[[chain_name]][chain_range]
-      chain[[chain_name]] = c(chain[[chain_name]], rep(0, n_add))
-    } else if (length(chain_dim) == 2) {
-      chain[[chain_name]] =
-        chain[[chain_name]][, chain_range, drop = FALSE]
-      chain[[chain_name]] = cbind(chain[[chain_name]],
-                                  matrix(0, nrow(chain[[chain_name]]), n_add))
-    } else if (length(chain_dim) == 3) {
-      chain[[chain_name]] =
-        chain[[chain_name]][, , chain_range, drop = FALSE]
-      dim1 = dim(chain[[chain_name]])
-      n0 = prod(dim1[1:2]) * n_add
-      chain[[chain_name]] = c(chain[[chain_name]], rep(0, n0))
-      chain[[chain_name]] = array(chain[[chain_name]],
-                                  dim = c(dim1[1:2], dim1[3] + n_add))
-    }
-  }
-  return(chain)
-}
-##################################
-fill_in = function(coeflst, chain, pos) {
-  var_names = gsub('_chain', '', names(chain))
-  for (var_name in var_names) {
-    chain_name = paste0(var_name, '_chain')
-    chain_dim = dim(chain[[chain_name]])
-    if (is.null(chain_dim)) {
-      chain[[chain_name]][pos] = coeflst[[var_name]]
-    } else if (length(chain_dim) == 2) {
-      chain[[chain_name]][, pos] = coeflst[[var_name]]
-    } else if (length(chain_dim) == 3) {
-      chain[[chain_name]][, , pos] = coeflst[[var_name]]
-    }
-  }
-  return(chain)
 }
 ##################################
 update_one_time = function(coeflst, object) {

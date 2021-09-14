@@ -101,24 +101,24 @@ new_BV_chain = function(A,
     hyperparameters$pi_delta = pi_delta
   }
 
-  chain = list(
-    delta_chain = matrix(delta, ncol = 1),
-    tau_2_chain = tau_2,
-    sigma_beta_chain = matrix(sigma_beta, ncol = 1),
-    sigma_alpha_2_chain = matrix(sigma_alpha_2, ncol = 1),
-    beta_chain = matrix(beta, ncol = 1),
-    Alpha_chain = array(Alpha, dim = c(dim(Alpha), 1))
+  coef_lst = list(
+    delta = delta,
+    tau_2 = tau_2,
+    sigma_beta = sigma_beta,
+    sigma_alpha_2 = sigma_alpha_2,
+    beta = beta,
+    Alpha = Alpha
   )
   if (enrichment) {
-    chain$gammaG_chain = matrix(gammaG, ncol = 1)
-    chain$sigma_gammaG_chain= matrix(sigma_gammaG, ncol = 1)
-    chain$tau_gammaG_2_chain = tau_gammaG_2
-    chain$omega_chain = matrix(omega, ncol = 1)
+    coef_lst$gammaG = gammaG
+    coef_lst$sigma_gammaG= sigma_gammaG
+    coef_lst$tau_gammaG_2 = tau_gammaG_2
+    coef_lst$omega = omega
   }
   BV_chain = list(
     data = data,
     hyperparameters = hyperparameters,
-    chain = chain,
+    chain = list(coef_lst),
     start_pos = 1,
     end_pos = 1,
     aggregation = aggregation,
