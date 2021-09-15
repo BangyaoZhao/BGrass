@@ -37,13 +37,18 @@ as.BV_chains = function(BV_chains) {
 coef.BV_chains = function(object,
                           chain_range = NULL,
                           ...) {
-  n_chains = length(object)
-  coef_lsts = lapply(object, function(BV_chain) {
-    coef_lst = coef(BV_chain, chain_range = chain_range)
-    return(coef_lst)
-  })
+  list2env(object[[1]], envir = environment())
+  if (is.null(chain_range)) {
+    chain_range =  max(ceiling(0.2 * end_pos), start_pos):end_pos
+  }
+  chain_range = chain_range[chain_range %in% (start_pos:end_pos)]
+  chain_range = chain_range + 1 - start_pos
 
-  coef_lst = lst_mean(coef_lsts)
+  chain = list()
+  for (BV_chain in object) {
+    chain = c(chain, BV_chain$chain[chain_range])
+  }
+  coef_lst = lst_mean(chain)
   return(coef_lst)
 }
 #####################################
@@ -54,7 +59,7 @@ lst_mean = function(lsts) {
     if (var == 'beta_conditional') {
       varMat = sapply(lsts, function(x)
         x[[var]])
-      mean_lst[[var]] = rowMeans(varMat,na.rm = TRUE)
+      mean_lst[[var]] = rowMeans(varMat, na.rm = TRUE)
     } else {
       for (j in 1:n_lsts) {
         mean_lst[[var]] =
