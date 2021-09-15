@@ -48,6 +48,7 @@ coef.BV_chains = function(object,
   for (BV_chain in object) {
     chain = c(chain, BV_chain$chain[chain_range])
   }
+  chain = lapply(chain, one_ite_summ)
   coef_lst = lst_mean(chain)
   return(coef_lst)
 }
