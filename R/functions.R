@@ -39,7 +39,7 @@ draw_Alpha = function(data, beta,  Omega,  sigma_alpha_2) {
     pre_alpha_j = crossprod(X, Omega[, j] * X) + diag(ncol(X)) / sigma_alpha_2
     mu_alpha_j = crossprod(X, A[, j] - nn / 2 - beta[j] * Omega[, j] * V)
 
-    Alpha[j, ] = rmvnorm_chol(mu_alpha_j, pre_alpha_j)
+    Alpha[j,] = rmvnorm_chol(mu_alpha_j, pre_alpha_j)
   }
   return(Alpha)
 }
@@ -54,20 +54,22 @@ draw_beta = function(beta,
   list2env(data, envir = environment())
 
   beta_old = beta
-  Lbeta = L %*% beta
+  #Lbeta = L %*% beta
   for (j in 1:length(beta)) {
     sigma_betaj_2 = sigma_beta[j] ^ 2 * delta[j] *
       sum(Omega[, j] * V ^ 2) + (L[j, j] + epsilon)
     sigma_betaj_2 = 1 / sigma_betaj_2
 
     mu_betaj = sigma_beta[j] * delta[j] *
-      sum((A[, j] - nn / 2 - (X %*% Alpha[j, ]) * Omega[, j]) * V) -
-      (sum(Lbeta[-j]) - sum(L[-j, j] * beta[j]))
-    # should be equal to sum(L[-j,-j] %*% beta[-j])
+      sum((A[, j] - nn / 2 - (X %*% Alpha[j,]) * Omega[, j]) * V) -
+      sum(L[j, -j] * beta[-j])
+    # browser()
+    # (sum(Lbeta[-j]) - sum(L[-j, j] * beta[j]))
+    # sum(L[-j,-j] %*% beta[-j])
     mu_betaj = sigma_betaj_2 * mu_betaj
 
     beta[j] = rnorm(1, mu_betaj, sqrt(sigma_betaj_2))
-    Lbeta = Lbeta + L[, j] * (beta[j] - beta_old[j])
+    #Lbeta = Lbeta + L[, j] * (beta[j] - beta_old[j])
   }
   bound = 100
   beta[abs(beta) > bound] = bound * sign(beta[abs(beta) > bound])
@@ -88,7 +90,7 @@ draw_sigma_beta = function(data,
     sigmaj_2 = 1 / sigmaj_2
 
     muj = beta[j] * delta[j] *
-      sum((A[, j] - nn / 2 - (X %*% Alpha[j,]) * Omega[, j]) * V)
+      sum((A[, j] - nn / 2 - (X %*% Alpha[j, ]) * Omega[, j]) * V)
     muj = sigmaj_2 * muj
 
     sigma_beta[j] = rtruncnorm(1,
@@ -103,10 +105,10 @@ draw_delta = function(data, Alpha, beta, Omega, pi_delta, gammaG = NULL) {
   list2env(data, envir = environment())
   delta = rep(0, length(beta))
   for (j in 1:length(beta)) {
-    D = beta[j] * sum((A[, j] - nn / 2 - (X %*% Alpha[j,]) * Omega[, j]) * V) -
+    D = beta[j] * sum((A[, j] - nn / 2 - (X %*% Alpha[j, ]) * Omega[, j]) * V) -
       0.5 * beta[j] ^ 2 * sum(Omega[, j] * V ^ 2)
     if (!is.null(gammaG)) {
-      D = D + sum(G[j,] * gammaG)
+      D = D + sum(G[j, ] * gammaG)
     }
     if (pi_delta == 1) {
       p = 1
@@ -127,7 +129,7 @@ draw_gammaG = function(data,
   for (k in 1:ncol(G)) {
     pre = sum(omega * G[, k] ^ 2) * sigma_gammaG[k] ^ 2 + 1
     mu = sum((delta - 0.5) * G[, k]) -
-      sum(gammaG[-k] * sigma_gammaG[-k] * colSums(omega * G[, k] * G[, -k]))
+      sum(gammaG[-k] * sigma_gammaG[-k] * colSums(omega * G[, k] * G[,-k]))
     mu = mu * sigma_gammaG[k] / pre
     gammaG[k] = rnorm(1, mu, 1 / sqrt(pre))
   }
@@ -144,7 +146,7 @@ draw_sigma_gammaG = function(data,
   for (k in 1:ncol(G)) {
     pre = sum(omega * G[, k] ^ 2) * gammaG[k] ^ 2 + 1 / tau_gammaG_2
     mu = sum((delta - 0.5) * G[, k]) -
-      sum(gammaG[-k] * sigma_gammaG[-k] * colSums(omega * G[, k] * G[,-k]))
+      sum(gammaG[-k] * sigma_gammaG[-k] * colSums(omega * G[, k] * G[, -k]))
     mu = mu * gammaG[k] / pre
     sigma_gammaG[k] = rtruncnorm(1,
                                  a = 0,
