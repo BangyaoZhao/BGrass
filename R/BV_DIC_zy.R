@@ -22,7 +22,7 @@ BV_DIC <- function(object,
     # alternate way of loglik
     # for individual data
     lik_temp = tcrossprod(X, mcmc_alpha[[i]]) + tcrossprod(V, beta)
-    loglik = colSums(A * lik_temp) - colSums(log1pexp(lik_temp))
+    loglik = colSums(A * lik_temp) - colSums(nn*log1pexp(lik_temp))
     return(loglik)
   }))
 
