@@ -13,11 +13,17 @@ BV_DIC <- function(object,
   #mcmc_loglik
   mcmc_loglik = t(sapply(1:ncol(mcmc_beta), function(i) {
     beta = mcmc_delta[,i] * mcmc_sigma_beta[,i] * mcmc_beta[,i]
-    P = 1 / (1 + exp(-(
-      tcrossprod(X, mcmc_alpha[[i]]) + tcrossprod(V, beta)
-    )))
-    l = colSums(A * log(P) + (nn - A) * log(1 - P)) 
-    return(l)
+    # P = 1 / (1 + exp(-(
+    #   tcrossprod(X, mcmc_alpha[[i]]) + tcrossprod(V, beta)
+    # )))
+    # l = colSums(A * log(P) + (nn - A) * log(1 - P))
+    # return(l)
+    
+    # alternate way of loglik
+    # for individual data
+    lik_temp = tcrossprod(X, mcmc_alpha[[i]]) + tcrossprod(V, beta)
+    loglik = colSums(A * lik_temp) - colSums(log1pexp(lik_temp))
+    return(loglik)
   }))
 
   
