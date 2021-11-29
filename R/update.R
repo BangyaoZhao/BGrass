@@ -16,6 +16,8 @@ update.BV_chain = function(object,
                            max_length = Inf ,
                            ...) {
   list2env(object, envir = environment())
+  # extend the logl
+  newlogl = rep(0,n_ite*n_thin)
 
   # extract the latest parameters
   chain_length = end_pos - start_pos + 1
@@ -46,7 +48,14 @@ update.BV_chain = function(object,
                        total = n_ite)
   }
   for (j in 1:n_ite) {
-    coeflst = update_one_time(coeflst, object)
+    for (i in 1:n_thin) {
+      coeflst = update_one_time(coeflst, object)
+      coeflst = one_ite_summ(coeflst)
+      newlogl[(j - 1) * n_thin + i] =
+        l_calcu(coeflst$beta_marginalized,
+                coeflst$Alpha,
+                data)
+    }
     pos = end_pos - start_pos  + 1 + j - n_ite
     if (pos >= 1) {
       chain[[pos]] = coeflst
@@ -63,7 +72,7 @@ update.BV_chain = function(object,
     close(pb)
   }
   # store the updated chain
-
+  object$logl = c(logl,newlogl)
   object$chain = chain
   object$end_pos = end_pos
   object$start_pos = start_pos

@@ -52,6 +52,7 @@ new_BV_chain = function(A,
                         a_gammaG = 0.5,
                         b_gammaG = 0.5,
                         pi_delta = 0.5,
+                        n_thin = 1,
                         aggregation = TRUE,
                         enrichment = FALSE) {
   data = list(
@@ -115,6 +116,8 @@ new_BV_chain = function(A,
     coef_lst$tau_gammaG_2 = tau_gammaG_2
     coef_lst$omega = omega
   }
+
+  coeflst = one_ite_summ(coef_lst)
   BV_chain = list(
     data = data,
     hyperparameters = hyperparameters,
@@ -126,6 +129,9 @@ new_BV_chain = function(A,
   )
 
   class(BV_chain) = 'BV_chain'
+  BV_chain$logl = logLik(BV_chain)
+  BV_chain$n_thin = n_thin
+
   return(BV_chain)
 }
 
