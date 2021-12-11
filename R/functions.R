@@ -49,15 +49,14 @@ draw_beta = function(beta,
                      Alpha,
                      Omega,
                      sigma_beta,
-                     delta,
-                     epsilon) {
+                     delta) {
   list2env(data, envir = environment())
 
   beta_old = beta
   #Lbeta = L %*% beta
   for (j in 1:length(beta)) {
     sigma_betaj_2 = sigma_beta[j] ^ 2 * delta[j] *
-      sum(Omega[, j] * V ^ 2) + (L[j, j] + epsilon)
+      sum(Omega[, j] * V ^ 2) + L[j, j]
     sigma_betaj_2 = 1 / sigma_betaj_2
 
     mu_betaj = sigma_beta[j] * delta[j] *

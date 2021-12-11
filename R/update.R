@@ -125,8 +125,7 @@ update_one_time = function(coeflst, object) {
                    Alpha,
                    Omega,
                    sigma_beta,
-                   delta,
-                   epsilon)
+                   delta)
   sigma_alpha_2 = 1 / rgamma(ncol(X),
                              a_alpha + J / 2,
                              b_alpha + colSums(Alpha ^ 2) / 2)

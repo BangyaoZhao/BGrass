@@ -55,6 +55,8 @@ new_BV_chain = function(A,
                         n_thin = 1,
                         aggregation = TRUE,
                         enrichment = FALSE) {
+  L = scaleL(L, epsilon)
+
   data = list(
     A = A,
     V = V,
@@ -88,7 +90,6 @@ new_BV_chain = function(A,
   Omega = draw_Omega(data, Alpha, beta * delta * sigma_beta, aggregation)
 
   hyperparameters = list(
-    epsilon = epsilon,
     a_alpha = a_alpha,
     b_alpha = b_alpha,
     a_tau = a_tau,
@@ -191,4 +192,17 @@ get_glm_coefs = function(data,
 
   return(list(beta_glm = beta_glm,
               Alpha_glm = Alpha_glm))
+}
+
+# --------------------
+scaleL = function(L, epsilon) {
+  J = ncol(L)
+  if (epsilon == Inf) {
+    corMat_inv = diag(J)
+  } else {
+    PreMat = L + epsilon * diag(J)
+    W = sqrt(diag(solve(PreMat)))
+    corMat_inv = (W %*% t(W)) * PreMat
+  }
+  return(corMat_inv)
 }
