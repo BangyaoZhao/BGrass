@@ -33,6 +33,31 @@ l_calcu = function(beta, Alpha, data) {
   return(l)
 }
 ##########################################
+full_l_calcu = function(data, coeflst, hyperparameters) {
+  list2env(coeflst, envir = environment())
+  list2env(data, envir = environment())
+  list2env(hyperparameters, envir = environment())
+  J = length(beta)
+  p1 = ncol(Alpha)
+  P = 1 / (1 + exp(-(
+    tcrossprod(X, Alpha) + tcrossprod(V, beta_marginalized)
+  )))
+  l = sum(A * log(P) + (nn - A) * log(1 - P))
+
+  l = l - sum(t(Alpha ^ 2) / sigma_alpha_2) / 2 -
+    sum(log(sigma_alpha_2)) * J / 2
+  l = l - sum(b_alpha / sigma_alpha_2) -
+    (a_alpha + 1) * sum(log(sigma_alpha_2))
+  l = l - t(beta) %*% L %*% beta / 2
+  l = l - J * sum(log(tau_2)) / 2 - sum(sigma_beta ^ 2 / tau_2) / 2
+  l = l - (a_tau + 1) * log(tau_2) + b_tau / tau_2
+  if (pi_delta < 1) {
+    l = l + sum(delta) * log(pi_delta) + (J - sum(delta)) * log(1 - pi_delta)
+  }
+  l = as.numeric(l)
+  return(l)
+}
+##########################################
 one_ite_summ = function(coeflst) {
   list2env(coeflst, envir = environment())
   beta_marginalized = beta * sigma_beta * delta

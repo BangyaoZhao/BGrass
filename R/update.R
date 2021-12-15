@@ -52,9 +52,9 @@ update.BV_chain = function(object,
       coeflst = update_one_time(coeflst, object)
       coeflst = one_ite_summ(coeflst)
       newlogl[(j - 1) * n_thin + i] =
-        l_calcu(coeflst$beta_marginalized,
-                coeflst$Alpha,
-                data)
+        full_l_calcu(data,
+                     coeflst,
+                     hyperparameters)
     }
     pos = end_pos - start_pos  + 1 + j - n_ite
     if (pos >= 1) {
