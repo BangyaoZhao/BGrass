@@ -1,0 +1,87 @@
+---
+title: "An toy example of Bayesian learning on vaccine data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{toy_example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(BV)
+set.seed(1)
+```
+
+Our package aims to provide a Bayesian learning toolbox to detect vaccine safety signals while incorporating the AE network. Suppose we are comparing vaccine A with vaccine B on 10 adverse events (AEs). We assume the log odds ratio of the occurrence of AE j is $\beta_j$. In the following example, we have two groups of AEs, both of which are of size 5. In group 1, logORs are 0.5 for all AEs, while -0.5 for group 2. We assume we have another 5 isolated AEs (not in any groups) that have $\beta_j=0$.
+
+```{r}
+J = 15 # number of AEs
+beta = rep(0,J)
+beta[1:5] = 0.5
+beta[6:10] = -0.5
+```
+
+Suppose we have 2000 reports, and they either mention vaccine A or vaccine B, and we are adjusting for two columns of covariates. For different AEs, the covariates have different coefficients. 
+
+```{r}
+n = 2000 # number of reports
+V = rbinom(n, 1, 0.5) # indicator of vaccine A
+X = cbind(1, rbinom(n,1,0.5), rbinom(n,1,0.5)) # generating covariates
+Alpha = matrix(rnorm(3 * J), J, 3) # create coefficients for covariates
+```
+
+We generate the AE occurrence matrix `A` using logistic link functions. 
+
+```{r}
+PA = X %*% t(Alpha) + V %*% t(beta)
+PA = 1 / (1 + exp(-PA))
+A = rbinom(n * J, 1, PA)
+A = matrix(A, n, J)
+```
+
+We need to convert the AE groups into a Laplacian matrix. We provide a function `getLaplacian` to simplify the task. The function takes a sequence of AEs, and a data frame of AE groups. The resulting matrix will have the order of rows and columns corresponding to the order of the input sequence. 
+
+```{r}
+data = data.frame(AE = c(paste0('AE', 1:10)),
+                  group = paste0('g', rep(1:2, each = 5)))
+L = getLaplacian(paste0('AE', 1:J), data)
+```
+
+Now, we can initialize the MCMC chain, update the chain, and use the `coef` function to get the posterior means of the MCMC samples. We have an `epsilon` that controls the strength of information borrowing. The smaller `epsilon` is, the stronger the information borrowing, and when `epsilon` is infinity, the model does not do any information borrowing and thus estimates AEs independently. 
+
+```{r}
+BV_chain1 = new_BV_chain(A, V, X, L, epsilon = Inf, n_thin = 2)
+BV_chain1 = update(BV_chain1, n_ite = 1000)
+
+```
+```{r}
+BV_chain2 = new_BV_chain(A, V, X, L, epsilon = 0.01, n_thin = 2)
+BV_chain2 = update(BV_chain2, n_ite = 1000)
+
+```
+
+Our model provides an indicator `delta` that indicates vaccine signals, i.e., logOR's that are not equal to 0. Clearly, both models can successfully identify signals and noises. 
+
+```{r}
+delta_hat1 = coef(BV_chain1)$delta
+delta_hat2 = coef(BV_chain2)$delta
+delta_hat1
+delta_hat2
+```
+
+We can use the MSE of $\hat{\beta} to compare the difference choices of `epsilon`. Because we have intentionally designed the logORs in the same group to be identical, so `epsilon = 0.001` works better than `epsilon = Inf` as expected. 
+
+```{r}
+beta_hat1 = coef(BV_chain1)$beta_marginalized
+beta_hat2 = coef(BV_chain2)$beta_marginalized
+mean((beta-beta_hat1)^2)
+mean((beta-beta_hat2)^2)
+```
+

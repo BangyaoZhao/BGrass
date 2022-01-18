@@ -9,11 +9,9 @@
 \arguments{
 \item{object}{An object of s3 class BV_chain}
 
-\item{chain_range}{Which part of the chain should be used}
+\item{chain_range}{Which part of the chain should be used, by default it will use the later 80\%}
 
 \item{...}{more arguments}
-
-\item{raw_beta}{Should the raw beta (or the marginal beta) be calculated}
 }
 \value{
 A list containing the estimated values of all the parameters in the chain.

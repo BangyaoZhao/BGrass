@@ -1,8 +1,7 @@
 #' Extract the logLik of the BV_chain at any position(s)
 #'
 #' @param object An object of s3 class BV_chain
-#' @param chain_range Which part of the chain should be used
-#' @param raw_beta Should the raw beta (or the marginal beta) be calculated
+#' @param chain_range Which part of the chain should be used, by default it will use the later 80\%
 #' @param ... more arguments
 #'
 #' @return A list containing the estimated values of all the parameters in the chain.
@@ -29,6 +28,12 @@ coef.BV_chain = function(object,
   return(coeflst)
 }
 #####################################
+#' Combine multiple BV chains
+#'
+#' @param BV_chains A list of objects of s3 class BV_chain
+#'
+#' @return An object of s3 class BV_chains
+#'
 as.BV_chains = function(BV_chains) {
   class(BV_chains) = 'BV_chains'
   return(BV_chains)

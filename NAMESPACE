@@ -3,8 +3,6 @@
 S3method(coef,BV_chain)
 S3method(coef,BV_chains)
 S3method(logLik,BV_chain)
-S3method(summary,BV_chain)
-S3method(summary,BV_chains)
 S3method(update,BV_chain)
 export(as.BV_chains)
 export(getG)

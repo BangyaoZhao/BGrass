@@ -8,7 +8,7 @@
 #' You can get it using the function \code{getLaplacian}.
 #' @param G The J by K matrix indicating the groups each AE comes from. if \code{!enrichment},
 #' this argument should be set to \code{NULL}.
-#' You can get it using the function \code{getG}.
+#' You can get it using the function \code{getG}. (It is not useful right now)
 #' @param nn If \code{A} is already aggregated, indicate the number of
 #' reports corresponding the each row of \code{A}. The function will
 #' assume the data is not aggregated, so \code{nn = rep(1, nrow(A))} by default.
@@ -19,11 +19,12 @@
 #' @param b_tau A hyperparameter
 #' @param pi_delta A hyperparameter controlling delta, only useful when not doing enrichment.
 #' If no variable selection is wanted, set \code{pi_delta = 1}.
-#' @param sigma_gammaG_2 Hyperparameter of gammaG, only useful when
-#' \code{enrichment = TRUE}
+#' @param a_gammaG For enrichment, not useful right now.
+#' @param b_gammaG For enrichment, not useful right now.
+#' @param n_thin Thinning parameter. The number of draws for one valid MCMC sample.
 #' @param aggregation Whether to perform aggregation.
 #' This will usually speed up the function without changing the result.
-#' @param enrichment Whether to perform enrichment.
+#' @param enrichment Whether to perform enrichment. This is under development, do not use this.
 #'
 #' @return \code{new_BV_chain} returns an object of S3 class \code{'BV_chain'} that is ready for method \code{update}
 #'
