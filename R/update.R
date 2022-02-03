@@ -15,7 +15,7 @@ update.BV_chain = function(object,
                            n_ite = 1,
                            max_length = Inf ,
                            ...) {
-  list2env(object, envir = environment())
+  list2env(object, envir = current_env())
   # extend the logl
   newlogl = rep(0,n_ite*n_thin)
 
@@ -80,9 +80,9 @@ update.BV_chain = function(object,
 }
 ##################################
 update_one_time = function(coeflst, object) {
-  list2env(coeflst, envir = environment())
-  list2env(object, envir = environment())
-  list2env(hyperparameters, envir = environment())
+  list2env(coeflst, envir = current_env())
+  list2env(object, envir = current_env())
+  list2env(hyperparameters, envir = current_env())
   J = length(beta)
   p1 = ncol(Alpha)
   new_coeflst = list()

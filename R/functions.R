@@ -3,7 +3,7 @@
 #' @importFrom BayesLogit rpg
 
 draw_Omega = function(data, Alpha, beta, aggregation) {
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
   b = rep(nn, ncol(A))
   c = as.vector(tcrossprod(X, Alpha) + V %*% t(beta))
   if (aggregation) {
@@ -17,7 +17,7 @@ draw_Omega = function(data, Alpha, beta, aggregation) {
 
 # draw_Alpha = function(data, beta,  Omega,  sigma_alpha_2) {
 #   #browser()
-#   list2env(data, envir = environment())
+#   list2env(data, envir = current_env())
 #   Alpha = matrix(0, length(beta), ncol(X))
 #   for (j in 1:length(beta)) {
 #     Sigma_alpha_j = crossprod(X, Omega[, j] * X) + diag(ncol(X)) / sigma_alpha_2
@@ -33,7 +33,7 @@ draw_Omega = function(data, Alpha, beta, aggregation) {
 
 draw_Alpha = function(data, beta,  Omega,  sigma_alpha_2) {
   #browser()
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
   Alpha = matrix(0, length(beta), ncol(X))
   for (j in 1:length(beta)) {
     pre_alpha_j = crossprod(X, Omega[, j] * X) + diag(ncol(X)) / sigma_alpha_2
@@ -50,7 +50,7 @@ draw_beta = function(beta,
                      Omega,
                      sigma_beta,
                      delta) {
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
 
   beta_old = beta
   #Lbeta = L %*% beta
@@ -81,7 +81,7 @@ draw_sigma_beta = function(data,
                            Omega,
                            delta,
                            tau_2) {
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
   sigma_beta = rep(0, length(beta))
 
   for (j in 1:length(beta)) {
@@ -101,7 +101,7 @@ draw_sigma_beta = function(data,
 }
 
 draw_delta = function(data, Alpha, beta, Omega, pi_delta, gammaG = NULL) {
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
   delta = rep(0, length(beta))
   for (j in 1:length(beta)) {
     D = beta[j] * sum((A[, j] - nn / 2 - (X %*% Alpha[j, ]) * Omega[, j]) * V) -
@@ -124,7 +124,7 @@ draw_gammaG = function(data,
                        gammaG,
                        sigma_gammaG,
                        delta) {
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
   for (k in 1:ncol(G)) {
     pre = sum(omega * G[, k] ^ 2) * sigma_gammaG[k] ^ 2 + 1
     mu = sum((delta - 0.5) * G[, k]) -
@@ -141,7 +141,7 @@ draw_sigma_gammaG = function(data,
                              sigma_gammaG,
                              delta,
                              tau_gammaG_2) {
-  list2env(data, envir = environment())
+  list2env(data, envir = current_env())
   for (k in 1:ncol(G)) {
     pre = sum(omega * G[, k] ^ 2) * gammaG[k] ^ 2 + 1 / tau_gammaG_2
     mu = sum((delta - 0.5) * G[, k]) -
