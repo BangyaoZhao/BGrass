@@ -84,6 +84,7 @@ update_one_time = function(coeflst, object) {
   list2env(coeflst, envir = current_env())
   list2env(object, envir = current_env())
   list2env(hyperparameters, envir = current_env())
+  list2env(data, envir = current_env())
   J = length(beta)
   p1 = ncol(Alpha)
   new_coeflst = list()
