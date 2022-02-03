@@ -14,7 +14,7 @@
 coef.BV_chain = function(object,
                          chain_range = NULL,
                          ...) {
-  list2env(object, envir = environment())
+  list2env(object, envir = current_env())
   if (is.null(chain_range)) {
     chain_range =  max(ceiling(0.2 * end_pos), start_pos):end_pos
   }
@@ -42,7 +42,7 @@ as.BV_chains = function(BV_chains) {
 coef.BV_chains = function(object,
                           chain_range = NULL,
                           ...) {
-  list2env(object[[1]], envir = environment())
+  list2env(object[[1]], envir = current_env())
   if (is.null(chain_range)) {
     chain_range =  max(ceiling(0.2 * end_pos), start_pos):end_pos
   }

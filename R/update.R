@@ -9,6 +9,7 @@
 #'
 #' @importFrom progress progress_bar
 #' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom rlang current_env
 #' @exportS3Method update BV_chain
 
 update.BV_chain = function(object,
