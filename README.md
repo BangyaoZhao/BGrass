@@ -1,6 +1,6 @@
-# BV
+# BGrass
 ## installation
 
 ```
-devtools::install_github("BangyaoZhao/BV")
+devtools::install_github("BangyaoZhao/BGrass")
 ```
