@@ -1,6 +1,6 @@
-Package: BV
+Package: BGrass
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Implement the BGrass model proposed by (Zhao et al. 2022).
 Version: 0.1.0
 Authors@R: 
   c(person(given = "Bangyao",
@@ -26,7 +26,8 @@ Imports:
     BayesLogit,
     igraph,
     dplyr,
-    utils
+    utils,
+    rlang
 RoxygenNote: 7.1.2
 Suggests: 
     rmarkdown,

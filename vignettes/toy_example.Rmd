@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(BV)
+library(BGrass)
 set.seed(1)
 ```
 
@@ -57,21 +57,21 @@ L = getLaplacian(paste0('AE', 1:J), data)
 Now, we can initialize the MCMC chain, update the chain, and use the `coef` function to get the posterior means of the MCMC samples. We have an `epsilon` that controls the strength of information borrowing. The smaller `epsilon` is, the stronger the information borrowing, and when `epsilon` is infinity, the model does not do any information borrowing and thus estimates AEs independently. 
 
 ```{r}
-BV_chain1 = new_BV_chain(A, V, X, L, epsilon = Inf, n_thin = 2)
-BV_chain1 = update(BV_chain1, n_ite = 1000)
+BGrass_chain1 = new_BGrass_chain(A, V, X, L, epsilon = Inf, n_thin = 2)
+BGrass_chain1 = update(BGrass_chain1, n_ite = 1000)
 
 ```
 ```{r}
-BV_chain2 = new_BV_chain(A, V, X, L, epsilon = 0.01, n_thin = 2)
-BV_chain2 = update(BV_chain2, n_ite = 1000)
+BGrass_chain2 = new_BGrass_chain(A, V, X, L, epsilon = 0.01, n_thin = 2)
+BGrass_chain2 = update(BGrass_chain2, n_ite = 1000)
 
 ```
 
 Our model provides an indicator `delta` that indicates vaccine signals, i.e., logOR's that are not equal to 0. Clearly, both models can successfully identify signals and noises. 
 
 ```{r}
-delta_hat1 = coef(BV_chain1)$delta
-delta_hat2 = coef(BV_chain2)$delta
+delta_hat1 = coef(BGrass_chain1)$delta
+delta_hat2 = coef(BGrass_chain2)$delta
 delta_hat1
 delta_hat2
 ```
@@ -79,8 +79,8 @@ delta_hat2
 We can use the MSE of $\hat{\beta} to compare the difference choices of `epsilon`. Because we have intentionally designed the logORs in the same group to be identical, so `epsilon = 0.001` works better than `epsilon = Inf` as expected. 
 
 ```{r}
-beta_hat1 = coef(BV_chain1)$beta_marginalized
-beta_hat2 = coef(BV_chain2)$beta_marginalized
+beta_hat1 = coef(BGrass_chain1)$beta_marginalized
+beta_hat2 = coef(BGrass_chain2)$beta_marginalized
 mean((beta-beta_hat1)^2)
 mean((beta-beta_hat2)^2)
 ```

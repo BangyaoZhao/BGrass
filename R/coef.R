@@ -1,17 +1,17 @@
-#' Extract the logLik of the BV_chain at any position(s)
+#' Extract the logLik of the BGrass_chain at any position(s)
 #'
-#' @param object An object of s3 class BV_chain
+#' @param object An object of s3 class BGrass_chain
 #' @param chain_range Which part of the chain should be used, by default it will use the later 80\%
 #' @param ... more arguments
 #'
 #' @return A list containing the estimated values of all the parameters in the chain.
 #'
-#' @exportS3Method coef BV_chain
-#' @exportS3Method coef BV_chains
-#' @export as.BV_chains
+#' @exportS3Method coef BGrass_chain
+#' @exportS3Method coef BGrass_chains
+#' @export as.BGrass_chains
 #'
 
-coef.BV_chain = function(object,
+coef.BGrass_chain = function(object,
                          chain_range = NULL,
                          ...) {
   list2env(object, envir = current_env())
@@ -28,18 +28,18 @@ coef.BV_chain = function(object,
   return(coeflst)
 }
 #####################################
-#' Combine multiple BV chains
+#' Combine multiple BGrass chains
 #'
-#' @param BV_chains A list of objects of s3 class BV_chain
+#' @param BGrass_chains A list of objects of s3 class BGrass_chain
 #'
-#' @return An object of s3 class BV_chains
+#' @return An object of s3 class BGrass_chains
 #'
-as.BV_chains = function(BV_chains) {
-  class(BV_chains) = 'BV_chains'
-  return(BV_chains)
+as.BGrass_chains = function(BGrass_chains) {
+  class(BGrass_chains) = 'BGrass_chains'
+  return(BGrass_chains)
 }
 #####################################
-coef.BV_chains = function(object,
+coef.BGrass_chains = function(object,
                           chain_range = NULL,
                           ...) {
   list2env(object[[1]], envir = current_env())
@@ -50,8 +50,8 @@ coef.BV_chains = function(object,
   chain_range = chain_range + 1 - start_pos
 
   chain = list()
-  for (BV_chain in object) {
-    chain = c(chain, BV_chain$chain[chain_range])
+  for (BGrass_chain in object) {
+    chain = c(chain, BGrass_chain$chain[chain_range])
   }
   chain = lapply(chain, one_ite_summ)
   coef_lst = lst_mean(chain)

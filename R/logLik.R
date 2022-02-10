@@ -1,16 +1,16 @@
-#' Extract the logLik of the BV_chain at any position(s)
+#' Extract the logLik of the BGrass_chain at any position(s)
 #'
-#' @param object An object of s3 class BV_chain
+#' @param object An object of s3 class BGrass_chain
 #' @param chain_range The range of the chain to be evaluated
 #' @param ... more arguments
 #'
 #' @return a vector of length \code{length(chain_range)} representing the
 #' corresponding log likelihood.
 #'
-#' @exportS3Method logLik BV_chain
+#' @exportS3Method logLik BGrass_chain
 #'
 
-logLik.BV_chain = function(object,
+logLik.BGrass_chain = function(object,
                            chain_range = object$start_pos:object$end_pos,
                            ...) {
   list2env(object, envir = environment())

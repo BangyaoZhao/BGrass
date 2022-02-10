@@ -1,18 +1,18 @@
-#' Update the BV chain
+#' Update the BGrass chain
 #'
-#' @param object An object of s3 class BV_chain
+#' @param object An object of s3 class BGrass_chain
 #' @param n_ite The number of new MCMC draws to add to the currrent chain
 #' @param max_length The maximum length of the chain to be stored
 #' @param ... more arguments
 #'
-#' @return The updated BV_chain
+#' @return The updated BGrass_chain
 #'
 #' @importFrom progress progress_bar
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom rlang current_env
-#' @exportS3Method update BV_chain
+#' @exportS3Method update BGrass_chain
 
-update.BV_chain = function(object,
+update.BGrass_chain = function(object,
                            n_ite = 1,
                            max_length = Inf ,
                            ...) {

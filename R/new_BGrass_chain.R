@@ -1,4 +1,4 @@
-#' Initialize a new BV chain
+#' Initialize a new BGrass chain
 #'
 #' @param A A 0-1 matrix with n rows and J columns (J AEs).
 #' The i-j th element of A indicates whether the j th AE is reported in report i.
@@ -26,20 +26,20 @@
 #' This will usually speed up the function without changing the result.
 #' @param enrichment Whether to perform enrichment. This is under development, do not use this.
 #'
-#' @return \code{new_BV_chain} returns an object of S3 class \code{'BV_chain'} that is ready for method \code{update}
+#' @return \code{new_BGrass_chain} returns an object of S3 class \code{'BGrass_chain'} that is ready for method \code{update}
 #'
-#' \code{help('update.BV_chain')}
+#' \code{help('update.BGrass_chain')}
 #'
-#' \code{help('logLik.BV_chain')}
+#' \code{help('logLik.BGrass_chain')}
 #'
 #' @importFrom truncnorm rtruncnorm etruncnorm
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom pgdraw pgdraw
 #' @importClassesFrom Matrix dgCMatrix
 #'
-#' @export new_BV_chain
+#' @export new_BGrass_chain
 
-new_BV_chain = function(A,
+new_BGrass_chain = function(A,
                         V,
                         X,
                         L,
@@ -120,7 +120,7 @@ new_BV_chain = function(A,
   }
 
   coeflst = one_ite_summ(coef_lst)
-  BV_chain = list(
+  BGrass_chain = list(
     data = data,
     hyperparameters = hyperparameters,
     chain = list(coef_lst),
@@ -130,11 +130,11 @@ new_BV_chain = function(A,
     enrichment = enrichment
   )
 
-  class(BV_chain) = 'BV_chain'
-  BV_chain$logl = logLik(BV_chain)
-  BV_chain$n_thin = n_thin
+  class(BGrass_chain) = 'BGrass_chain'
+  BGrass_chain$logl = logLik(BGrass_chain)
+  BGrass_chain$n_thin = n_thin
 
-  return(BV_chain)
+  return(BGrass_chain)
 }
 
 # ------------
