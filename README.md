@@ -1,6 +1,8 @@
 # BGrass
 ## Installation
 
+Install it from Github.
+
 ```
 devtools::install_github("BangyaoZhao/BGrass")
 ```
